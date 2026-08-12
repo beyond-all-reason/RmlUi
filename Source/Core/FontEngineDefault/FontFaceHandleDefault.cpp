@@ -189,6 +189,8 @@ int FontFaceHandleDefault::GenerateString(RenderManager& render_manager, Texture
 		[](int sum, const FontFaceLayer* layer) { return sum + layer->GetNumTextures(); });
 
 	mesh_list.resize(num_geometries);
+	for (TexturedMesh& textured_mesh : mesh_list)
+		textured_mesh.mesh.metadata.semantic = RenderGeometrySemantic::GlyphRun;
 
 	for (size_t layer_index = 0; layer_index < layer_configuration.size(); ++layer_index)
 	{

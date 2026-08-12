@@ -104,6 +104,22 @@ DecoratorDataHandle DecoratorNinePatch::GenerateElementData(Element* element, Bo
 
 	/* Now we have all the coordinates we need. Expand the diagonal vertices to the 16 individual vertices. */
 	Mesh mesh;
+	mesh.metadata.semantic = RenderGeometrySemantic::NinePatch;
+	mesh.metadata.source_identifier = element->GetAddress();
+	mesh.metadata.element_address = reinterpret_cast<uintptr_t>(element);
+	mesh.metadata.local_bounds = {surface_pos[0].x, surface_pos[0].y, surface_pos[3].x, surface_pos[3].y};
+	mesh.metadata.destination_edge_widths = {
+		surface_pos[1].x - surface_pos[0].x,
+		surface_pos[1].y - surface_pos[0].y,
+		surface_pos[3].x - surface_pos[2].x,
+		surface_pos[3].y - surface_pos[2].y,
+	};
+	mesh.metadata.texture_source_insets = {
+		tex_coords[1].x - tex_coords[0].x,
+		tex_coords[1].y - tex_coords[0].y,
+		tex_coords[3].x - tex_coords[2].x,
+		tex_coords[3].y - tex_coords[2].y,
+	};
 	Vector<Vertex>& vertices = mesh.vertices;
 	Vector<int>& indices = mesh.indices;
 

@@ -62,4 +62,21 @@ void RenderInterface::RenderShader(CompiledShaderHandle /*shader*/, CompiledGeom
 
 void RenderInterface::ReleaseShader(CompiledShaderHandle /*shader*/) {}
 
+bool RenderInterface::SupportsInlineBrightness() const
+{
+	return false;
+}
+
+void RenderInterface::PushInlineBrightness(float /*value*/) {}
+
+void RenderInterface::PopInlineBrightness() {}
+
+void RenderInterface::BeginDocument(const String& /*source_url*/) {}
+
+void RenderInterface::EndDocument() {}
+
+void RenderInterface::NotifyBoxShadowOperation() {}
+
+void RenderInterface::NotifyBackdropFilterOperation() {}
+
 } // namespace Rml

@@ -208,6 +208,20 @@ void ElementEffects::RenderEffects(RenderStage render_stage)
 	if (!render_manager)
 		return;
 
+	float inline_brightness = 1.f;
+	const bool use_inline_brightness = filters.size() == 1 && backdrop_filters.empty() && mask_images.empty() &&
+		render_manager->SupportsInlineBrightness() && filters[0].filter->GetInlineBrightness(inline_brightness);
+	if (use_inline_brightness)
+	{
+		if (render_stage == RenderStage::Enter)
+			render_manager->PushInlineBrightness(inline_brightness);
+		else if (render_stage == RenderStage::Exit)
+			render_manager->PopInlineBrightness();
+		return;
+	}
+	if (render_stage == RenderStage::Enter && !backdrop_filters.empty())
+		render_manager->NotifyBackdropFilterOperation();
+
 	Rectanglei initial_scissor_region = render_manager->GetScissorRegion();
 
 	auto ApplyClippingRegion = [this, &render_manager](PropertyId filter_id) {

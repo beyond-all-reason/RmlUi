@@ -23,6 +23,9 @@ public:
 	/// @return A compiled filter constructed through the render manager, or a default-constructed one to indicate an error.
 	virtual CompiledFilter CompileFilter(Element* element) const = 0;
 
+	/// Returns true when this filter is a pure multiplicative brightness transform suitable for inline rendering.
+	virtual bool GetInlineBrightness(float& value) const;
+
 	/// Called to allow extending the area being affected by this filter beyond the border box of the element.
 	/// @param[in] element The element the filter is being rendered on.
 	/// @param[in,out] overflow The ink overflow rectangle determining the clipping region to be applied when filtering the current element.

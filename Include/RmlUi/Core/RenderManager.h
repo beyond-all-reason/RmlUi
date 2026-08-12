@@ -75,6 +75,14 @@ public:
 	CompiledFilter CompileFilter(const String& name, const Dictionary& parameters);
 	CompiledShader CompileShader(const String& name, const Dictionary& parameters);
 
+	bool SupportsInlineBrightness() const;
+	void PushInlineBrightness(float value);
+	void PopInlineBrightness();
+	void BeginDocument(const String& source_url);
+	void EndDocument();
+	void NotifyBoxShadowOperation();
+	void NotifyBackdropFilterOperation();
+
 	LayerHandle PushLayer();
 	void CompositeLayers(LayerHandle source, LayerHandle destination, BlendMode blend_mode, Span<const CompiledFilterHandle> filters);
 	void PopLayer();

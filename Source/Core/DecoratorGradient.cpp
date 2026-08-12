@@ -141,6 +141,9 @@ DecoratorDataHandle DecoratorStraightGradient::GenerateElementData(Element* elem
 
 	Mesh mesh;
 	MeshUtilities::GenerateBackground(mesh, render_box, ColourbPremultiplied());
+	mesh.metadata.semantic = RenderGeometrySemantic::Unknown;
+	mesh.metadata.source_identifier = element->GetAddress();
+	mesh.metadata.element_address = reinterpret_cast<uintptr_t>(element);
 
 	ColourbPremultiplied colour_start = start.ToPremultiplied(opacity);
 	ColourbPremultiplied colour_stop = stop.ToPremultiplied(opacity);
@@ -264,6 +267,8 @@ DecoratorDataHandle DecoratorLinearGradient::GenerateElementData(Element* elemen
 	const ComputedValues& computed = element->GetComputedValues();
 	const byte alpha = byte(computed.opacity() * 255.f);
 	MeshUtilities::GenerateBackground(mesh, render_box, ColourbPremultiplied(alpha, alpha));
+	mesh.metadata.source_identifier = element->GetAddress();
+	mesh.metadata.element_address = reinterpret_cast<uintptr_t>(element);
 
 	const Vector2f render_offset = render_box.GetFillOffset();
 	for (Vertex& vertex : mesh.vertices)
@@ -433,6 +438,8 @@ DecoratorDataHandle DecoratorRadialGradient::GenerateElementData(Element* elemen
 	const ComputedValues& computed = element->GetComputedValues();
 	const byte alpha = byte(computed.opacity() * 255.f);
 	MeshUtilities::GenerateBackground(mesh, render_box, ColourbPremultiplied(alpha, alpha));
+	mesh.metadata.source_identifier = element->GetAddress();
+	mesh.metadata.element_address = reinterpret_cast<uintptr_t>(element);
 
 	const Vector2f render_offset = render_box.GetFillOffset();
 	for (Vertex& vertex : mesh.vertices)
@@ -630,6 +637,8 @@ DecoratorDataHandle DecoratorConicGradient::GenerateElementData(Element* element
 	const ComputedValues& computed = element->GetComputedValues();
 	const byte alpha = byte(computed.opacity() * 255.f);
 	MeshUtilities::GenerateBackground(mesh, render_box, ColourbPremultiplied(alpha, alpha));
+	mesh.metadata.source_identifier = element->GetAddress();
+	mesh.metadata.element_address = reinterpret_cast<uintptr_t>(element);
 
 	const Vector2f render_offset = render_box.GetFillOffset();
 	for (Vertex& vertex : mesh.vertices)

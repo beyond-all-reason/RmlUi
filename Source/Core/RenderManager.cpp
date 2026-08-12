@@ -201,7 +201,8 @@ CompiledGeometryHandle RenderManager::GetCompiledGeometryHandle(StableVectorInde
 	if (!geometry.handle && !geometry.mesh.indices.empty())
 	{
 		RMLUI_ZoneScopedNC("CompileGeometry", 0x1E60D2);
-		geometry.handle = render_interface->CompileGeometry(geometry.mesh.vertices, geometry.mesh.indices);
+		geometry.handle = render_interface->CompileGeometryWithMetadata(
+			geometry.mesh.vertices, geometry.mesh.indices, &geometry.mesh.metadata);
 
 		if (!geometry.handle)
 			Log::Message(Log::LT_ERROR, "Got empty compiled geometry.");
@@ -278,6 +279,41 @@ CompiledFilter RenderManager::CompileFilter(const String& name, const Dictionary
 	}
 
 	return CompiledFilter();
+}
+
+bool RenderManager::SupportsInlineBrightness() const
+{
+	return render_interface->SupportsInlineBrightness();
+}
+
+void RenderManager::PushInlineBrightness(float value)
+{
+	render_interface->PushInlineBrightness(value);
+}
+
+void RenderManager::PopInlineBrightness()
+{
+	render_interface->PopInlineBrightness();
+}
+
+void RenderManager::BeginDocument(const String& source_url)
+{
+	render_interface->BeginDocument(source_url);
+}
+
+void RenderManager::EndDocument()
+{
+	render_interface->EndDocument();
+}
+
+void RenderManager::NotifyBoxShadowOperation()
+{
+	render_interface->NotifyBoxShadowOperation();
+}
+
+void RenderManager::NotifyBackdropFilterOperation()
+{
+	render_interface->NotifyBackdropFilterOperation();
 }
 
 CompiledShader RenderManager::CompileShader(const String& name, const Dictionary& parameters)

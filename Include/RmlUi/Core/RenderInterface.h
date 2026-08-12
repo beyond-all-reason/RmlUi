@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Header.h"
+#include "RenderGeometry.h"
 #include "Traits.h"
 #include "Types.h"
 #include "Vertex.h"
@@ -38,6 +39,12 @@ public:
 	/// @lifetime The pointed-to vertex and index data are guaranteed to be valid and immutable until ReleaseGeometry()
 	/// is called with the geometry handle returned here.
 	virtual CompiledGeometryHandle CompileGeometry(Span<const Vertex> vertices, Span<const int> indices) = 0;
+	/// Optional semantic compilation path. Backends which do not consume semantic rendering information automatically use CompileGeometry().
+	virtual CompiledGeometryHandle CompileGeometryWithMetadata(Span<const Vertex> vertices, Span<const int> indices,
+		const RenderGeometryMetadata* metadata)
+	{
+		return CompileGeometry(vertices, indices);
+	}
 	/// Called by RmlUi when it wants to render geometry.
 	/// @param[in] geometry The geometry to render.
 	/// @param[in] translation The translation to apply to the geometry.
@@ -138,6 +145,17 @@ public:
 	/// Called by RmlUi when it no longer needs a previously compiled shader.
 	/// @param[in] shader The handle to a previously compiled shader.
 	virtual void ReleaseShader(CompiledShaderHandle shader);
+
+	/// Optional inline color-transform path used to avoid an offscreen layer for a pure brightness filter.
+	virtual bool SupportsInlineBrightness() const;
+	virtual void PushInlineBrightness(float value);
+	virtual void PopInlineBrightness();
+
+	/// Optional document markers for attribution and comparison-mode batch barriers.
+	virtual void BeginDocument(const String& source_url);
+	virtual void EndDocument();
+	virtual void NotifyBoxShadowOperation();
+	virtual void NotifyBackdropFilterOperation();
 };
 
 } // namespace Rml

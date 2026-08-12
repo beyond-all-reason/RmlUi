@@ -529,6 +529,11 @@ void ElementText::GenerateGeometry(RenderManager& render_manager, const FontFace
 
 	// Apply the new geometry and textures. Reuse the old geometry if the mesh matches, which can be relatively common
 	// where the layout is changed in a way that does not visually affect this element.
+	for (TexturedMesh& textured_mesh : mesh_list)
+	{
+		textured_mesh.mesh.metadata.source_identifier = GetAddress();
+		textured_mesh.mesh.metadata.element_address = reinterpret_cast<uintptr_t>(this);
+	}
 	geometry.resize(mesh_list.size());
 	for (size_t i = 0; i < mesh_list.size(); i++)
 	{

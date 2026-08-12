@@ -19,6 +19,14 @@ CompiledFilter FilterBasic::CompileFilter(Element* element) const
 	return element->GetRenderManager()->CompileFilter(name, Dictionary{{"value", Variant(value)}});
 }
 
+bool FilterBasic::GetInlineBrightness(float& out_value) const
+{
+	if (name != "brightness")
+		return false;
+	out_value = value;
+	return true;
+}
+
 FilterBasicInstancer::FilterBasicInstancer(ValueType value_type, const char* default_value)
 {
 	switch (value_type)

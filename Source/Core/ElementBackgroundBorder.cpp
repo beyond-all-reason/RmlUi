@@ -69,6 +69,9 @@ Geometry* ElementBackgroundBorder::GetClipGeometry(Element* element, BoxArea cli
 	{
 		Mesh mesh = geometry.Release(Geometry::ReleaseMode::ClearMesh);
 		MeshUtilities::GenerateBackground(mesh, element->GetRenderBox(clip_area), ColourbPremultiplied(255));
+		mesh.metadata.source_identifier = element->GetAddress();
+		mesh.metadata.element_address = reinterpret_cast<uintptr_t>(element);
+		mesh.metadata.semantic = RenderGeometrySemantic::RoundedClip;
 		geometry = render_manager->MakeGeometry(std::move(mesh));
 	}
 
@@ -133,6 +136,8 @@ void ElementBackgroundBorder::GenerateGeometry(Element* element)
 
 	for (int i = 0; i < element->GetNumBoxes(); i++)
 		MeshUtilities::GenerateBackgroundBorder(mesh, element->GetRenderBox(BoxArea::Padding, i), background_color, border_colors.data());
+	mesh.metadata.source_identifier = element->GetAddress();
+	mesh.metadata.element_address = reinterpret_cast<uintptr_t>(element);
 
 	geometry = render_manager->MakeGeometry(std::move(mesh));
 }

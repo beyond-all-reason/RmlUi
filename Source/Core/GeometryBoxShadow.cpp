@@ -108,6 +108,7 @@ void GeometryBoxShadow::GenerateTexture(CallbackTexture& out_shadow_texture, Geo
 		size_t num_boxes = info.border_render_boxes.size();
 
 		RenderManager& render_manager = texture_interface.GetRenderManager();
+		render_manager.NotifyBoxShadowOperation();
 
 		Mesh mesh_padding;        // Render geometry for inner box-shadow.
 		Mesh mesh_padding_border; // Clipping mask for outer box-shadow.

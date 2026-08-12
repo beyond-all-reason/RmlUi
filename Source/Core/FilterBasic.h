@@ -10,6 +10,7 @@ public:
 	bool Initialise(const String& name, float value);
 
 	CompiledFilter CompileFilter(Element* element) const override;
+	bool GetInlineBrightness(float& value) const override;
 
 private:
 	String name;

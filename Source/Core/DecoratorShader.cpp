@@ -41,6 +41,8 @@ DecoratorDataHandle DecoratorShader::GenerateElementData(Element* element, BoxAr
 	const ComputedValues& computed = element->GetComputedValues();
 	const byte alpha = byte(computed.opacity() * 255.f);
 	MeshUtilities::GenerateBackground(mesh, render_box, ColourbPremultiplied(alpha, alpha));
+	mesh.metadata.source_identifier = element->GetAddress();
+	mesh.metadata.element_address = reinterpret_cast<uintptr_t>(element);
 
 	const Vector2f offset = render_box.GetFillOffset();
 	for (Vertex& vertex : mesh.vertices)

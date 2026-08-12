@@ -178,6 +178,9 @@ void Element::Render()
 	RMLUI_ZoneScoped;
 	RMLUI_ZoneText(name.c_str(), name.size());
 #endif
+	ElementDocument* rendered_document = rmlui_dynamic_cast<ElementDocument*>(this);
+	if (rendered_document && GetRenderManager())
+		GetRenderManager()->BeginDocument(rendered_document->GetSourceURL());
 
 	UpdateAbsoluteOffsetAndRenderBoxData();
 
@@ -210,6 +213,9 @@ void Element::Render()
 		element->Render();
 
 	meta->effects.RenderEffects(RenderStage::Exit);
+
+	if (rendered_document && GetRenderManager())
+		GetRenderManager()->EndDocument();
 }
 
 ElementPtr Element::Clone() const

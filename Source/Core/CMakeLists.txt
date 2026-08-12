@@ -309,6 +309,7 @@ target_sources(rmlui_core PRIVATE
 	"${PROJECT_SOURCE_DIR}/Include/RmlUi/Core/PropertySpecification.h"
 	"${PROJECT_SOURCE_DIR}/Include/RmlUi/Core/Rectangle.h"
 	"${PROJECT_SOURCE_DIR}/Include/RmlUi/Core/RenderBox.h"
+	"${PROJECT_SOURCE_DIR}/Include/RmlUi/Core/RenderGeometry.h"
 	"${PROJECT_SOURCE_DIR}/Include/RmlUi/Core/RenderInterface.h"
 	"${PROJECT_SOURCE_DIR}/Include/RmlUi/Core/RenderInterfaceCompatibility.h"
 	"${PROJECT_SOURCE_DIR}/Include/RmlUi/Core/RenderManager.h"

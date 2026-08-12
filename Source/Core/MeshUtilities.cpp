@@ -7,6 +7,32 @@
 
 namespace Rml {
 
+static void SetBoxMetadata(Mesh& mesh, const RenderBox& render_box, ColourbPremultiplied background_color,
+	const ColourbPremultiplied border_colors[4], RenderGeometrySemantic semantic)
+{
+	if (!mesh.vertices.empty() || !mesh.indices.empty())
+	{
+		mesh.metadata.semantic = RenderGeometrySemantic::Unknown;
+		return;
+	}
+
+	const EdgeSizes widths = render_box.GetBorderWidths();
+	const CornerSizes radii = render_box.GetBorderRadius();
+	const Vector2f p0 = render_box.GetBorderOffset();
+	const Vector2f size = render_box.GetFillSize() + Vector2f(widths[3] + widths[1], widths[0] + widths[2]);
+	mesh.metadata.semantic = semantic;
+	mesh.metadata.local_bounds = {p0.x, p0.y, p0.x + size.x, p0.y + size.y};
+	mesh.metadata.destination_edge_widths = {widths[3], widths[0], widths[1], widths[2]};
+	mesh.metadata.border_widths = mesh.metadata.destination_edge_widths;
+	mesh.metadata.corner_radii = {radii[0], radii[1], radii[2], radii[3]};
+	mesh.metadata.background_color = background_color;
+	if (border_colors)
+	{
+		// Convert RmlUi's top/right/bottom/left order to the renderer metadata's left/top/right/bottom convention.
+		mesh.metadata.border_colors = {border_colors[3], border_colors[0], border_colors[1], border_colors[2]};
+	}
+}
+
 void MeshUtilities::GenerateQuad(Mesh& mesh, Vector2f origin, Vector2f dimensions, ColourbPremultiplied colour)
 {
 	GenerateQuad(mesh, origin, dimensions, colour, Vector2f(0, 0), Vector2f(1, 1));
@@ -17,6 +43,18 @@ void MeshUtilities::GenerateQuad(Mesh& mesh, Vector2f origin, Vector2f dimension
 {
 	const int v0 = (int)mesh.vertices.size();
 	const int i0 = (int)mesh.indices.size();
+	if (mesh.metadata.semantic == RenderGeometrySemantic::GlyphRun)
+		mesh.metadata.glyph_quad_boundaries.push_back(v0);
+	else if (v0 == 0 && i0 == 0)
+	{
+		mesh.metadata.semantic = RenderGeometrySemantic::Quad;
+		mesh.metadata.local_bounds = {origin.x, origin.y, origin.x + dimensions.x, origin.y + dimensions.y};
+		mesh.metadata.quad_boundaries.push_back(v0);
+	}
+	else if (mesh.metadata.semantic == RenderGeometrySemantic::Quad)
+		mesh.metadata.quad_boundaries.push_back(v0);
+	else
+		mesh.metadata.semantic = RenderGeometrySemantic::Unknown;
 
 	mesh.vertices.resize(mesh.vertices.size() + 4);
 	mesh.indices.resize(mesh.indices.size() + 6);
@@ -58,6 +96,7 @@ void MeshUtilities::GenerateBackgroundBorder(Mesh& out_mesh, const RenderBox& re
 	const ColourbPremultiplied border_colors[4])
 {
 	RMLUI_ASSERT(border_colors);
+	SetBoxMetadata(out_mesh, render_box, background_color, border_colors, RenderGeometrySemantic::BackgroundBorder);
 
 	Vector<Vertex>& vertices = out_mesh.vertices;
 	Vector<int>& indices = out_mesh.indices;
@@ -117,6 +156,8 @@ void MeshUtilities::GenerateBackgroundBorder(Mesh& out_mesh, const RenderBox& re
 
 void MeshUtilities::GenerateBackground(Mesh& out_mesh, const RenderBox& render_box, ColourbPremultiplied color)
 {
+	const ColourbPremultiplied transparent_borders[4] = {};
+	SetBoxMetadata(out_mesh, render_box, color, transparent_borders, RenderGeometrySemantic::BackgroundBorder);
 	const Vector2f fill_size = render_box.GetFillSize();
 	const bool has_background = (color.alpha > 0 && fill_size.x > 0 && fill_size.y > 0);
 	if (!has_background)

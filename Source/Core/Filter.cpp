@@ -7,6 +7,11 @@ Filter::Filter() {}
 
 Filter::~Filter() {}
 
+bool Filter::GetInlineBrightness(float& /*value*/) const
+{
+	return false;
+}
+
 void Filter::ExtendInkOverflow(Element* /*element*/, Rectanglef& /*scissor_region*/) const {}
 
 FilterInstancer::FilterInstancer() {}
